@@ -273,7 +273,7 @@
                                  unit:(HKUnit *)unit
                            completion:(void (^)(double, NSError *))completionHandler {
                              
-    NSPredicate *timePredicate = [RCTAppleHealthKit predicateForSamplesOnDay:day];
+    NSPredicate *timePredicate = [RCTAppleHealthKit predicateForSamplesToday];
     NSPredicate *sourcePredicate = [NSPredicate predicateWithFormat:@"metadata.%K != YES", HKMetadataKeyWasUserEntered];
 
     NSArray *subPredicates = [[NSArray alloc] initWithObjects:timePredicate, sourcePredicate, nil];
