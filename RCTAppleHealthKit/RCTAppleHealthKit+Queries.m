@@ -272,10 +272,15 @@
 - (void)fetchSumOfSamplesTodayForType:(HKQuantityType *)quantityType
                                  unit:(HKUnit *)unit
                            completion:(void (^)(double, NSError *))completionHandler {
+                             
+    NSPredicate *timePredicate = [RCTAppleHealthKit predicateForSamplesOnDay:day];
+    NSPredicate *sourcePredicate = [NSPredicate predicateWithFormat:@"metadata.%K != YES", HKMetadataKeyWasUserEntered];
 
-    NSPredicate *predicate = [RCTAppleHealthKit predicateForSamplesToday];
+    NSArray *subPredicates = [[NSArray alloc] initWithObjects:timePredicate, sourcePredicate, nil];
+    NSCompoundPredicate *compoundPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:subPredicates];
+
     HKStatisticsQuery *query = [[HKStatisticsQuery alloc] initWithQuantityType:quantityType
-                                                          quantitySamplePredicate:predicate
+                                                          quantitySamplePredicate:compoundPredicate
                                                           options:HKStatisticsOptionCumulativeSum
                                                           completionHandler:^(HKStatisticsQuery *query, HKStatistics *result, NSError *error) {
                                                                 HKQuantity *sum = [result sumQuantity];
@@ -293,10 +298,15 @@
                                  unit:(HKUnit *)unit
                                   day:(NSDate *)day
                            completion:(void (^)(double, NSDate *, NSDate *, NSError *))completionHandler {
+                             
+    NSPredicate *timePredicate = [RCTAppleHealthKit predicateForSamplesOnDay:day];
+    NSPredicate *sourcePredicate = [NSPredicate predicateWithFormat:@"metadata.%K != YES", HKMetadataKeyWasUserEntered];
 
-    NSPredicate *predicate = [RCTAppleHealthKit predicateForSamplesOnDay:day];
+    NSArray *subPredicates = [[NSArray alloc] initWithObjects:timePredicate, sourcePredicate, nil];
+    NSCompoundPredicate *compoundPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:subPredicates];
+                             
     HKStatisticsQuery *query = [[HKStatisticsQuery alloc] initWithQuantityType:quantityType
-                                                          quantitySamplePredicate:predicate
+                                                          quantitySamplePredicate:compoundPredicate
                                                           options:HKStatisticsOptionCumulativeSum
                                                           completionHandler:^(HKStatisticsQuery *query, HKStatistics *result, NSError *error) {
                                                               HKQuantity *sum = [result sumQuantity];
